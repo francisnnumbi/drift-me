@@ -11,7 +11,7 @@ import '../../services/data_services.dart';
 class CategoryScreen extends StatelessWidget {
    CategoryScreen({Key? key, }) : super(key: key){
      if(DataServices.to.category.value != null) {
-       _category = DataServices.to.category.value!.toJson();
+       _category = DataServices.to.category.value!.category.toJson();
        log(_category.toString());
      }
 
@@ -34,31 +34,53 @@ class CategoryScreen extends StatelessWidget {
           centerTitle: true,
           title:  Text(DataServices.to.category.value == null?'Create Category':'Update Category'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-            children: [
-              TextFormField(
-                initialValue: _category['description'],
-                decoration: const InputDecoration(
-                  hintText: 'Enter a name',
-                  labelText: 'Category Name',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (va) {
-                  if (va!.isEmpty) {
-                    return "Le champs doit avoir une valeur";
-                  }
-                  return null;
-                },
-                onSaved: (String? value) {
-                  _category['description'] = value.toString();
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                children: [
+                  TextFormField(
+                    initialValue: _category['description'],
+                    decoration: const InputDecoration(
+                      hintText: 'Enter a name',
+                      labelText: 'Category Name',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (va) {
+                      if (va!.isEmpty) {
+                        return "Le champs doit avoir une valeur";
+                      }
+                      return null;
+                    },
+                    onSaved: (String? value) {
+                      _category['description'] = value.toString();
+                    },
+                  ),
+                ],
+              ),),
+            ),
+            Text('Todos'),
+            Divider(),
+           if(DataServices.to.category.value != null) Expanded(
+              child: ListView.builder(
+                itemCount: DataServices.to.category.value!.todos!.length,
+                itemBuilder: (context, index) {
+                  Todo todo = DataServices.to.category.value!.todos![index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      child: Text(todo.title[0].toUpperCase()),
+                    ),
+                    minLeadingWidth: 10,
+                    title: Text(todo.title),
+                     subtitle: Text(todo.content),
+                  );
                 },
               ),
-            ],
-          ),),
+            ),
+          ],
         ),
         floatingActionButton:  FloatingActionButton(
           onPressed: (){

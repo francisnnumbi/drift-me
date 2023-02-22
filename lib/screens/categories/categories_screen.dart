@@ -1,8 +1,8 @@
+import 'package:drift_me/models/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../components/bottom_menu.dart';
-import '../../database/my_database.dart';
 import '../../routes/routes.dart';
 import '../../services/data_services.dart';
 
@@ -22,7 +22,7 @@ class CategoriesScreen extends StatelessWidget {
         return ListView.builder(
           itemCount: DataServices.to.categories.length,
           itemBuilder: (context, index) {
-            Category category = DataServices.to.categories[index];
+            CategoryModel category = DataServices.to.categories[index];
             return ListTile(
               leading: CircleAvatar(child: Text((index+1).toString())),
               title: Text(category.description),
@@ -37,7 +37,7 @@ class CategoriesScreen extends StatelessWidget {
                   foregroundColor: MaterialStateProperty.all(Colors.red),
                 ),
                 onPressed: () {
-                  DataServices.to.deleteCategory(category);
+                  DataServices.to.deleteCategory(category.category);
                 },
               ),
             );

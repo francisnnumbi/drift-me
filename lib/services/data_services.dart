@@ -1,4 +1,5 @@
 import 'package:drift_me/database/my_database.dart';
+import 'package:drift_me/models/category_model.dart';
 import 'package:drift_me/models/todo_model.dart';
 import 'package:get/get.dart';
 import 'package:drift/drift.dart' as d;
@@ -15,8 +16,8 @@ class DataServices extends GetxService {
 // ------- ./static methods ------- //
 
   var idx = 0.obs;
-  var category = Rxn<Category>();
-  var categories = <Category>[].obs;
+  var category = Rxn<CategoryModel>();
+  var categories = <CategoryModel>[].obs;
   var todo = Rxn<Todo>();
   var todos = <TodoModel>[].obs;
 
@@ -29,7 +30,7 @@ class DataServices extends GetxService {
       await DB.categoriesDao.insertCategory(c);
       Get.snackbar('Category', 'Category added successfully');
     } else {
-      CategoriesCompanion c = category.value!
+      CategoriesCompanion c = category.value!.category
           .copyWith(
             description: data['description'],
           )
@@ -43,7 +44,7 @@ class DataServices extends GetxService {
   }
 
   Future<void> getCategoryById(int id) async {
-    category.value = await DB.categoriesDao.getCategoryById(id);
+    category.value = CategoryModel(category: await DB.categoriesDao.getCategoryById(id));
   }
 
   Future<void> deleteCategoryById(int id) async {
@@ -54,6 +55,11 @@ class DataServices extends GetxService {
   }
 
   Future<void> deleteCategory(Category category) async {
+    List<Todo> f = await DB.todosDao.getTodosByCategoryId(category.id);
+    if(f.isNotEmpty) {
+      Get.snackbar('Category', 'Category has todos, delete them first');
+      return;
+    }
     Get.defaultDialog(
       title: 'Delete Category',
       middleText: 'Are you sure you want to delete: ${category.description}?',
@@ -128,6 +134,9 @@ class DataServices extends GetxService {
   onReady() async {
     DB.categoriesDao.watchAllCategories().listen((event) {
       categories.value = event;
+      for (var element in categories) {
+        element.fillTodos();
+      }
     });
     DB.todosDao.watchAllTodos().listen((event) {
       todos.value = event;
