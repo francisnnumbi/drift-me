@@ -1,4 +1,3 @@
-import 'package:drift_me/database/my_database.dart';
 import 'package:drift_me/models/todo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,7 +29,7 @@ class HomeScreen extends StatelessWidget {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(todo.content),
+                  Text(todo.shortContent),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
@@ -43,8 +42,7 @@ class HomeScreen extends StatelessWidget {
               ),
               minLeadingWidth: 10,
               onTap: () {
-                DataServices.to.todo.value = todo.todo;
-                Get.toNamed(Routes.todo);
+                DataServices.to.openTodoModel(todo);
               },
               trailing: IconButton(
                 icon: const Icon(Icons.delete),

@@ -28,8 +28,7 @@ class CategoriesScreen extends StatelessWidget {
               title: Text(category.description),
               minLeadingWidth: 10,
               onTap: () {
-                DataServices.to.category.value = category;
-                Get.toNamed(Routes.category);
+                DataServices.to.openCategory(category);
               },
               trailing: IconButton(
                 icon: const Icon(Icons.delete),

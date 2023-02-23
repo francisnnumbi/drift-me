@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:drift_me/database/my_database.dart';
 import 'package:drift_me/models/category_model.dart';
 import 'package:drift_me/models/todo_model.dart';
@@ -18,10 +20,16 @@ class DataServices extends GetxService {
   var idx = 0.obs;
   var category = Rxn<CategoryModel>();
   var categories = <CategoryModel>[].obs;
-  var todo = Rxn<Todo>();
+  var todo = Rxn<TodoModel>();
   var todos = <TodoModel>[].obs;
 
   // ------- Categories ------- //
+  openCategory(CategoryModel category) {
+    this.category.value = category;
+    Get.toNamed(Routes.category);
+    this.category.value!.fillTodos();
+  }
+
   saveCategory(Map data) async {
     if (category.value == null) {
       CategoriesCompanion c = CategoriesCompanion(
@@ -80,10 +88,20 @@ class DataServices extends GetxService {
 
   // ------- Todos ------- //
 
+  openTodoModel(TodoModel todo) {
+    this.todo.value = todo;
+    Get.toNamed(Routes.todo);
+  }
+
+  openTodo(Todo todo) async{
+    this.todo.value = await DB.todosDao.getTodoModelById(todo.id);
+    Get.toNamed(Routes.todo);
+  }
+
   saveTodo(Map data) async {
     d.Value<int?> dd = const d.Value.absent();
     if(data['category'] != null) {
-      int? s = int.tryParse(data['category']);
+      int? s = int.tryParse(data['category'].toString());
       dd = s != null?d.Value(s):const d.Value.absent();
     }
 
@@ -96,7 +114,7 @@ class DataServices extends GetxService {
       await DB.todosDao.insertTodo(t);
       Get.snackbar('Todo', 'Todo added successfully');
     } else {
-      TodosCompanion t = todo.value!
+      TodosCompanion t = todo.value!.todo
           .copyWith(
             title: data['title'],
             content: data['content'],
@@ -121,6 +139,9 @@ class DataServices extends GetxService {
         this.todo.value = null;
         Get.back();
         Get.snackbar('Todo', 'Todo deleted successfully');
+        try {
+          category.value!.fillTodos();
+        } catch (e) {}
       },
       onCancel: () {
         //Get.back();
