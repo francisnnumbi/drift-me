@@ -9,8 +9,7 @@ import '../../services/data_services.dart';
 class TodoScreen extends StatelessWidget {
    TodoScreen({Key? key, }) : super(key: key){
      if(DataServices.to.todo.value != null) {
-       _todo = DataServices.to.todo.value!.toJson();
-       log(_todo.toString());
+       _todo = DataServices.to.todo.value!.todo.toJson();
      }
    }
 
@@ -41,6 +40,7 @@ class TodoScreen extends StatelessWidget {
               children: [
                 TextFormField(
                   initialValue: _todo['title'],
+                  maxLength: 32,
                   decoration: const InputDecoration(
                     hintText: 'Enter a title',
                     labelText: 'Todo title',
@@ -48,7 +48,9 @@ class TodoScreen extends StatelessWidget {
                   ),
                   validator: (va) {
                     if (va!.isEmpty) {
-                      return "Le champs doit avoir une valeur";
+                      return "Le titre doit avoir une valeur";
+                    }else if(va.length < 6 || va.length > 32) {
+                      return "Le titre doit avoir entre 6 et 32 caractères";
                     }
                     return null;
                   },
@@ -59,6 +61,7 @@ class TodoScreen extends StatelessWidget {
                 const SizedBox(height: 10,),
                 TextFormField(
                   initialValue: _todo['content'],
+                  maxLines: 5,
                   decoration: const InputDecoration(
                     hintText: 'Enter content',
                     labelText: 'Todo content',

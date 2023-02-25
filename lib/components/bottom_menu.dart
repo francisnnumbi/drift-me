@@ -20,16 +20,23 @@ class BottomMenu extends StatelessWidget {
           case 1:
             Get.toNamed(Routes.categories);
             break;
+          case 2:
+            Get.toNamed(Routes.settings);
+            break;
         }
       },
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+          icon: Icon(Icons.notes_outlined),
+          label: 'Todos',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.category_outlined),
+          icon: Icon(Icons.layers_outlined),
           label: 'Categories',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings_suggest_outlined),
+          label: 'Settings',
         ),
       ],
     );

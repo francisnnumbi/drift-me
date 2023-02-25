@@ -26,6 +26,19 @@ class TodosDao extends DatabaseAccessor<MyDatabase> with _$TodosDaoMixin {
 
 
   Future<Todo> getTodoById(int id) => (select(todos)..where((t) => t.id.equals(id))).getSingle();
+
+  Future<TodoModel> getTodoModelById(int id) => ((select(todos)
+    ..where((t) => t.id.equals(id)))
+      .join([
+    leftOuterJoin(db.categories, db.categories.id.equalsExp(todos.category)),
+  ])).map((row) {
+    return TodoModel(
+      todo:row.readTable(todos),
+      category: row.readTableOrNull(db.categories),
+    );
+  }).getSingle();
+
+
   Future<List<Todo>> getTodosByCategoryId(int id) =>
       (select(todos)..where((t) => t.category.equals(id))).get();
   Future<int> insertTodo(TodosCompanion todo) => into(todos).insert(todo);
