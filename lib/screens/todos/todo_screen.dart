@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +13,7 @@ class TodoScreen extends StatelessWidget {
    }
 
   final _formKey = GlobalKey<FormState>();
-  Map _todo = {
+ late Map _todo = {
     'id': '',
     'title': '',
     'content': '',
