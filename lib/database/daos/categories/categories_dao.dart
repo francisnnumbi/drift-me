@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:drift_me/main.dart';
 import 'package:drift_me/models/category_model.dart';
 
 import '../../my_database.dart';

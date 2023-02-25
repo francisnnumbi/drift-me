@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_me/database/tables/categories.dart';
 
-import '../my_database.dart';
 
 @DataClassName('Todo')
 class Todos extends Table {

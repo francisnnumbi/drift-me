@@ -1,4 +1,3 @@
-import 'package:drift_me/database/my_database.dart';
 import 'package:drift_me/models/todo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
