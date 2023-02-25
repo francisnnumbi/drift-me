@@ -42,7 +42,7 @@ class Routes {
 
     GetPage(
       name: settings,
-      page: () =>  SettingsScreen(),
+      page: () =>  const SettingsScreen(),
       transition: Transition.downToUp,
       transitionDuration: const Duration(milliseconds: 500),
     ),

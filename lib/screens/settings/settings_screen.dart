@@ -5,7 +5,7 @@ import '../../services/data_services.dart';
 
 
 class SettingsScreen extends StatelessWidget {
-   SettingsScreen({Key? key, }) : super(key: key);
+   const SettingsScreen({Key? key, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

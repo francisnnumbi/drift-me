@@ -1,10 +1,8 @@
-import 'dart:developer';
 
 import 'package:drift_me/database/my_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../components/bottom_menu.dart';
 import '../../services/data_services.dart';
 
 class CategoryScreen extends StatelessWidget {
@@ -17,7 +15,7 @@ class CategoryScreen extends StatelessWidget {
   }
 
   final _formKey = GlobalKey<FormState>();
-  Map _category = {
+  late Map _category = {
     'id': '',
     'description': '',
   };

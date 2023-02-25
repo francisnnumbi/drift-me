@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:drift_me/database/my_database.dart';
 import 'package:drift_me/models/category_model.dart';
@@ -141,7 +140,7 @@ class DataServices extends GetxService {
         Get.snackbar('Todo', 'Todo deleted successfully');
         try {
           category.value!.fillTodos();
-        } catch (e) {}
+        } catch (_) {}
       },
       onCancel: () {
         //Get.back();
