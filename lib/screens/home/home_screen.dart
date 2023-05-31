@@ -12,11 +12,16 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return   Scaffold(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: false,
-        title: const Text('Home'),
+        title: const Text('Todos'),
+        actions: [
+          Obx(() {
+            return CircleAvatar(child: Text(DataServices.to.todos.length.toString()));
+          }).paddingOnly(right: 10),
+        ],
       ),
       body: Obx(() {
         return ListView.builder(
@@ -24,19 +29,21 @@ class HomeScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             TodoModel todo = DataServices.to.todos[index];
             return ListTile(
-              leading: CircleAvatar(child: Text((index+1).toString())),
+              leading: CircleAvatar(child: Text((index + 1).toString())),
               title: Text(todo.title),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(todo.shortContent),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(5)
-                  )
-                    ,child: Text("${todo.description??'No category'}", style: const TextStyle(fontSize: 11),)
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(5)
+                      )
+                      ,
+                      child: Text("${todo.description ?? 'No category'}",
+                        style: const TextStyle(fontSize: 11),)
                   ),
                 ],
               ),
@@ -44,14 +51,21 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 DataServices.to.openTodoModel(todo);
               },
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(Colors.red),
-                ),
-                onPressed: () {
-                  DataServices.to.deleteTodo(todo.todo);
-                },
+              trailing: Column(
+                children: [
+                  Expanded(
+                    child: IconButton(
+                      icon: const Icon(Icons.delete),
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all(Colors.red),
+                      ),
+                      onPressed: () {
+                        DataServices.to.deleteTodo(todo.todo);
+                      },
+                    ),
+                  ),
+                  Text(todo.priority.toString()),
+                ],
               ),
             );
           },
@@ -68,7 +82,7 @@ class HomeScreen extends StatelessWidget {
           ),
           child: const Icon(Icons.add)
       ),
-      bottomNavigationBar:  const BottomMenu(),
+      bottomNavigationBar: const BottomMenu(),
     );
   }
 }

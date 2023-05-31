@@ -8,6 +8,7 @@ class TodoModel{
   get title => todo.title;
   get content => todo.content;
   get categoryId => todo.category;
+  get priority => todo.priority;
   get description => category?.description;
 
   get shortContent => content.length > 50 ? '${content.substring(0, 50)}...' : content;

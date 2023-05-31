@@ -214,8 +214,17 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'));
+  static const VerificationMeta _priorityMeta =
+      const VerificationMeta('priority');
   @override
-  List<GeneratedColumn> get $columns => [id, title, content, category];
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+      'priority', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, content, category, priority];
   @override
   String get aliasedName => _alias ?? 'todos';
   @override
@@ -244,6 +253,10 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
       context.handle(_categoryMeta,
           category.isAcceptableOrUnknown(data['category']!, _categoryMeta));
     }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    }
     return context;
   }
 
@@ -261,6 +274,8 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
           .read(DriftSqlType.string, data['${effectivePrefix}body'])!,
       category: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}category']),
+      priority: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
     );
   }
 
@@ -275,11 +290,13 @@ class Todo extends DataClass implements Insertable<Todo> {
   final String title;
   final String content;
   final int? category;
+  final int priority;
   const Todo(
       {required this.id,
       required this.title,
       required this.content,
-      this.category});
+      this.category,
+      required this.priority});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -289,6 +306,7 @@ class Todo extends DataClass implements Insertable<Todo> {
     if (!nullToAbsent || category != null) {
       map['category'] = Variable<int>(category);
     }
+    map['priority'] = Variable<int>(priority);
     return map;
   }
 
@@ -300,6 +318,7 @@ class Todo extends DataClass implements Insertable<Todo> {
       category: category == null && nullToAbsent
           ? const Value.absent()
           : Value(category),
+      priority: Value(priority),
     );
   }
 
@@ -311,6 +330,7 @@ class Todo extends DataClass implements Insertable<Todo> {
       title: serializer.fromJson<String>(json['title']),
       content: serializer.fromJson<String>(json['content']),
       category: serializer.fromJson<int?>(json['category']),
+      priority: serializer.fromJson<int>(json['priority']),
     );
   }
   @override
@@ -321,6 +341,7 @@ class Todo extends DataClass implements Insertable<Todo> {
       'title': serializer.toJson<String>(title),
       'content': serializer.toJson<String>(content),
       'category': serializer.toJson<int?>(category),
+      'priority': serializer.toJson<int>(priority),
     };
   }
 
@@ -328,12 +349,14 @@ class Todo extends DataClass implements Insertable<Todo> {
           {int? id,
           String? title,
           String? content,
-          Value<int?> category = const Value.absent()}) =>
+          Value<int?> category = const Value.absent(),
+          int? priority}) =>
       Todo(
         id: id ?? this.id,
         title: title ?? this.title,
         content: content ?? this.content,
         category: category.present ? category.value : this.category,
+        priority: priority ?? this.priority,
       );
   @override
   String toString() {
@@ -341,13 +364,14 @@ class Todo extends DataClass implements Insertable<Todo> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('content: $content, ')
-          ..write('category: $category')
+          ..write('category: $category, ')
+          ..write('priority: $priority')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, content, category);
+  int get hashCode => Object.hash(id, title, content, category, priority);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -355,7 +379,8 @@ class Todo extends DataClass implements Insertable<Todo> {
           other.id == this.id &&
           other.title == this.title &&
           other.content == this.content &&
-          other.category == this.category);
+          other.category == this.category &&
+          other.priority == this.priority);
 }
 
 class TodosCompanion extends UpdateCompanion<Todo> {
@@ -363,17 +388,20 @@ class TodosCompanion extends UpdateCompanion<Todo> {
   final Value<String> title;
   final Value<String> content;
   final Value<int?> category;
+  final Value<int> priority;
   const TodosCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.content = const Value.absent(),
     this.category = const Value.absent(),
+    this.priority = const Value.absent(),
   });
   TodosCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required String content,
     this.category = const Value.absent(),
+    this.priority = const Value.absent(),
   })  : title = Value(title),
         content = Value(content);
   static Insertable<Todo> custom({
@@ -381,12 +409,14 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     Expression<String>? title,
     Expression<String>? content,
     Expression<int>? category,
+    Expression<int>? priority,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (content != null) 'body': content,
       if (category != null) 'category': category,
+      if (priority != null) 'priority': priority,
     });
   }
 
@@ -394,12 +424,14 @@ class TodosCompanion extends UpdateCompanion<Todo> {
       {Value<int>? id,
       Value<String>? title,
       Value<String>? content,
-      Value<int?>? category}) {
+      Value<int?>? category,
+      Value<int>? priority}) {
     return TodosCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       content: content ?? this.content,
       category: category ?? this.category,
+      priority: priority ?? this.priority,
     );
   }
 
@@ -418,6 +450,9 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     if (category.present) {
       map['category'] = Variable<int>(category.value);
     }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
     return map;
   }
 
@@ -427,7 +462,8 @@ class TodosCompanion extends UpdateCompanion<Todo> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('content: $content, ')
-          ..write('category: $category')
+          ..write('category: $category, ')
+          ..write('priority: $priority')
           ..write(')'))
         .toString();
   }

@@ -12,12 +12,12 @@ part 'todos_dao.g.dart';
 class TodosDao extends DatabaseAccessor<MyDatabase> with _$TodosDaoMixin {
   TodosDao(MyDatabase db) : super(db);
 
-  Future<List<Todo>> getAllTodos() => select(todos).get();
+  Future<List<Todo>> getAllTodos() => (select(todos)..orderBy([(t)=>OrderingTerm.desc(t.priority)])).get();
 
-  Stream<List<TodoModel>> watchAllTodos() => select(todos)
+  Stream<List<TodoModel>> watchAllTodos() => (select(todos)
   .join([
     leftOuterJoin(db.categories, db.categories.id.equalsExp(todos.category)),
-  ]).map((row) {
+  ])..orderBy([OrderingTerm.desc(todos.priority)])).map((row) {
     return TodoModel(
       todo:row.readTable(todos),
      category: row.readTableOrNull(db.categories),
