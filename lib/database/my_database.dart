@@ -31,4 +31,5 @@ MyDatabase() : super(_openConnection());
   @override
   // TODO: implement schemaVersion
   int get schemaVersion => 1;
+
 }

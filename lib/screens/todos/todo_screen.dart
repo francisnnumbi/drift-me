@@ -17,6 +17,7 @@ class TodoScreen extends StatelessWidget {
     'id': '',
     'title': '',
     'content': '',
+   'priority': 0,
     'category': null,
   };
   @override
@@ -95,6 +96,24 @@ class TodoScreen extends StatelessWidget {
                   ,
                   onChanged: (value) {
                     _todo['category'] = value.toString();
+                  },
+                ),
+                const SizedBox(height: 10,),
+                DropdownButtonFormField(
+                  value: _todo['priority'],
+                  decoration: const InputDecoration(
+                    hintText: 'Select priority',
+                    labelText: 'Priority',
+                    border: OutlineInputBorder(),
+                  ),
+                  items:
+                  [0,1,2,3,4,5,6].map((e) => DropdownMenuItem(
+                    value: e,
+                    child: Text(e.toString()),
+                  )).toList()
+                  ,
+                  onChanged: (value) {
+                    _todo['priority'] = value;
                   },
                 ),
               ],

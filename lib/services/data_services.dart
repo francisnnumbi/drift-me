@@ -108,6 +108,7 @@ class DataServices extends GetxService {
       TodosCompanion t = TodosCompanion(
         title: d.Value(data['title']),
         content: d.Value(data['content']),
+        priority: d.Value(data['priority']),
         category: dd,
       );
       await DB.todosDao.insertTodo(t);
@@ -117,6 +118,7 @@ class DataServices extends GetxService {
           .copyWith(
             title: data['title'],
             content: data['content'],
+            priority: data['priority'],
             category: dd,
           ).toCompanion(true);
 
